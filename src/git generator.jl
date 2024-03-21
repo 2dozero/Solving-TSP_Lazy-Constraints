@@ -3,6 +3,8 @@ using UnicodePlots, Logging, LinearAlgebra, Printf
 import MathOptInterface
 using Gurobi
 using TravelingSalesmanExact
+using Plots
+import Plots: savefig
 
 # Solve the TSP instance as an integer programming problem with subtour elimination constraints added as lazy constraints using either Gurobi or CPLEX.
 
@@ -25,7 +27,7 @@ function is_tsp_solved(m, x; benchmark=false, coords)
         println("cycle_idx: ", cycle_idx)
         println("Length: ", length(cycle_idx))
     end
-    @info "Adding subtour elimination constraint" plot_tour(coords, x_val) # Fix
+    
     if length(cycle_idx) < N
         @constraint(m, sum(x[cycle_idx,cycle_idx]) <= length(cycle_idx) - 1) # cycle_dix : [1, 6, 3, 7]
         return false
@@ -74,11 +76,16 @@ function solve_tsp(;file_name="att48.tsp", benchmark=false)
         @constraint(m, x[f,t]+x[t,f] <= 1)
     end
 
+    memory = []
     optimize!(m)
+    x_val = JuMP.value.(x)
+    push!(memory, x_val)
     !benchmark && println("Obj: ", JuMP.objective_value(m))
 
     while !is_tsp_solved(m, x; benchmark=benchmark, coords)
         optimize!(m)
+        x_val = JuMP.value.(x)
+        push!(memory, x_val)
     end
 
     !benchmark && println("Obj: ", JuMP.objective_value(m))
@@ -92,13 +99,21 @@ function solve_tsp(;file_name="att48.tsp", benchmark=false)
         println("Optimal: ", optimal)
         println("Termination status: ", JuMP.termination_status(m))
     end
+
+    x_coords = [coord[1] for coord in coords]
+    y_coords = [coord[2] for coord in coords]
+    for i in 1:length(memory)
+        generate_and_save_plots(x_coords, y_coords, memory[i], "plot_$i.png")
+    end
+
+
 end
 
-function plot_tour(cities, perm_matrix)
-    cycles = get_cycles(perm_matrix)
-    tour = reduce(vcat, cycles)
-    return plot_cities(cities[tour])
-end
+# function plot_tour(cities, perm_matrix)
+#     cycles = get_cycles(perm_matrix)
+#     tour = reduce(vcat, cycles)
+#     return plot_cities(cities[tour])
+# end
 
 function plot_cities(cities)
     loop = [cities[mod1(j+1, end)] for j = 0:length(cities)]
@@ -139,5 +154,35 @@ end
 function main()
     solve_tsp()
 end
+
+function selected_edges(x, N)
+    return [(i, j) for i in 1:N for j in 1:N if x[i, j] > 0.5]
+end
+
+function plot_tour(X, Y, x)
+    plot = Plots.plot()
+    for (i, j) in selected_edges(x, size(x, 1))
+        Plots.plot!([X[i], X[j]], [Y[i], Y[j]]; legend = false)
+    end
+    return plot
+end
+
+
+function generate_and_save_plots(X, Y, edges, filename)
+    plot = plot_tour(X, Y, edges)
+    savefig(plot, filename)
+end
+
+
+# # plot_tour(coords[:, ], Y, memory[3])
+
+# function generate_and_save_plots(X, Y, edges, filename)
+#     plot = plot_tour(X, Y, edges)
+#     savefig(plot, filename)
+# end
+# for i in 1:length(optimal_edges)
+#     generate_and_save_plots(X, Y, optimal_edges[i], "plot_$i.png")
+# end
+
 
 main()
