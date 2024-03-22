@@ -73,6 +73,9 @@ function solve_tsp(;file_name="att48.tsp", benchmark=false)
     for f=1:N, t=1:N
         @constraint(m, x[f,t]+x[t,f] <= 1)
     end
+    for i=1:N, j=1:N
+        @constraint(m, 0 <= x[i, j] <= 1)
+    end
 
     optimize!(m)
     !benchmark && println("Obj: ", JuMP.objective_value(m))
