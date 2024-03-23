@@ -1,12 +1,16 @@
-using JuMP, Gurobi
+using JuMP, Gurobi, CPLEX
+import Concorde
 
 function solve_TSP_lazy(x_c::Vector{Float64}, y_c::Vector{Float64})
     N = size(x_c)[1]
-    m = Model(Gurobi.Optimizer)
-    dist_mat = zeros(N,N)
+    m = Model(CPLEX.Optimizer)
+    dist_mat = zeros(Int, N, N)
     for i=1:N, j=1:N
-        dist_mat[i, j] = sqrt((x_c[i]-x_c[j])^2 + (y_c[i]-y_c[j])^2)
+        dist_mat[i, j] = sqrt((x_c[i]-x_c[j])^2 + (y_c[i]-y_c[j])^2) |> round
+        #  * 1000 |> round
     end
+    # concorde_result = Concorde.solve_tsp(dist_mat)
+    # @show concorde_result
     @variable(m, x[1:N,1:N], Bin)
     @objective(m, Min, sum(x[i,j] * dist_mat[i,j] for i=1:N,j=1:N))
     for i=1:N 
@@ -39,6 +43,7 @@ function solve_TSP_lazy(x_c::Vector{Float64}, y_c::Vector{Float64})
         if length(cycle_idx) < N
             con = @build_constraint(sum(x[cycle_idx,cycle_idx]) <= length(cycle_idx) - 1) # cycle_dix : [1, 6, 3, 7]
             MOI.submit(m, MOI.LazyConstraint(cb_data), con)
+            println(con)
         end
     end
     # Register the above call_back_function() to the TSP model .
@@ -49,10 +54,10 @@ function solve_TSP_lazy(x_c::Vector{Float64}, y_c::Vector{Float64})
     println("optimization is done.")
     x_val = value.(x)
 
-    # opt_tour = cycle_idx
-    opt_len = objective_value(m)
-
-    return opt_len
+    opt_len = round(JuMP.objective_value(m))
+    @printf("optimize tour length : %d\n", opt_len)
+    # @show concorde_result
+    return
 
 end
 
@@ -80,13 +85,13 @@ function read_tsp_file(;file_name="att48.tsp", benchmark=false)
     # @show x_coords, y_coords
 end
 
-# x, y = read_tsp_file()
+x, y = read_tsp_file()
 # solve by lazy constraints and Gurobi
 # generate a random instance
-n = 20
-x = rand(n)
-y = rand(n)
-lazy_tour_len = solve_TSP_lazy(x, y)
+# n = 50
+# x = rand(n)
+# y = rand(n)
+solve_TSP_lazy(x, y)
 
 # solve by the Concorde solver
 # length_concorde = solve_TSP_Concorde(x, y)
