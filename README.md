@@ -17,9 +17,7 @@ nature of model optimization, it was observed that the speed significantly slows
 a certain number of nodes.
 Given that the problems we aim to solve must be of a realistic size, taking such factors into
 account, the speed of the models can be ranked as follows: Concorde > SE by Lazy > All SE >
-Iterative SE. For the remaining three models, excluding Concorde, the execution time was too long
-for bier127 to be included in this report. Further experiments on this matter are planned, with the
-intention to upload the table to the GitHub repository afterward.
+Iterative SE.
 
 ## Code Explanation
 In 'Iterative_SE.jl'(version 1), the code optimizes the TSP and checks if it's solved by using the Is_Tsp_Solved function. If the problem is solved, the objective value is printed, and the program exits. If not, constraints related to it are iteratively added at each step. The process of checking if it’s solved involves storing decision variables with x-values in cycle_idx, and if its length is less than the number of nodes, it indicates that a subtour still exists.
