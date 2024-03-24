@@ -35,7 +35,7 @@ function is_tsp_solved(m, x; benchmark=false, coords)
     return true
 end 
 
-function solve_tsp(;file_name="att48.tsp", benchmark=false)
+function solve_tsp(;file_name="st70.tsp", benchmark=false)
     # f = open("./data/" * file_name);
     # lines = readlines(f)
     coords = []
@@ -171,7 +171,7 @@ end
 function generate_and_save_plots(X, Y, edges, filename)
     plot = plot_tour(X, Y, edges)
     # savefig(plot, filename)
-    savefig(plot, "./image/" * filename)
+    savefig(plot, "./image/st70/" * filename)
 end
 
 

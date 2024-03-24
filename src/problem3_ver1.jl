@@ -1,8 +1,7 @@
-using JuMP, GLPK, Distances
+using JuMP, GLPK, Distances, CPLEX
 using UnicodePlots, Logging, LinearAlgebra, Printf
 import MathOptInterface
 using Gurobi
-using TravelingSalesmanExact
 
 # Solve the TSP instance as an integer programming problem with subtour elimination constraints added as lazy constraints using either Gurobi or CPLEX.
 
@@ -30,7 +29,7 @@ function is_tsp_solved(m, x; benchmark=false, coords)
         println("cycle_idx: ", cycle_idx)
         println("Length: ", length(cycle_idx))
     end
-    @info "Adding subtour elimination constraint" plot_tour(coords, x_val) # Fix
+    # @info "Adding subtour elimination constraint" plot_tour(coords, x_val) # Fix
     if length(cycle_idx) < N
         @constraint(m, sum(x[cycle_idx, cycle_idx]) <= length(cycle_idx) - 1) # cycle_dix : [1, 6, 3, 7]
         # print(m)
@@ -39,9 +38,8 @@ function is_tsp_solved(m, x; benchmark=false, coords)
     return true
 end 
 
-function solve_tsp(;file_name="att48.tsp", benchmark=false)
-    # f = open("./data/" * file_name);
-    # lines = readlines(f)
+function solve_tsp(;file_name="st70.tsp", benchmark=false)
+    # file list = [berlin52.tsp, bier127.tsp, ch150.tsp]
     coords = []
     start_reading = false
     f = open("./data/" * file_name)
@@ -60,7 +58,7 @@ function solve_tsp(;file_name="att48.tsp", benchmark=false)
     N = length(coords)
     !benchmark && println("N: ", N)
 
-    m = Model(Gurobi.Optimizer)
+    m = Model(CPLEX.Optimizer) # you can use Gurobi or CPLEX
     dist_mat = zeros(N,N)
     for i=1:N, j=i+1:N
         d = round(euclidean(coords[i], coords[j]))
@@ -150,4 +148,11 @@ function main()
     solve_tsp()
 end
 
-main()
+
+# main()
+
+elapsed_time = @elapsed begin
+    main()
+end
+
+println("Solve TSP execution time: ", elapsed_time, " seconds")

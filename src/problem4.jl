@@ -1,9 +1,13 @@
 using Concorde
 
-opt_tour, opt_len = solve_tsp("./data/att48.tsp")
+elapsed_time = @elapsed begin
+    opt_tour, opt_len = Concorde.solve_tsp("./data/st70.tsp")
+end
+
 # Optimal length: 10628
 println("Optimal tour: ", opt_tour)
 println("Optimal length: ", opt_len)
+println("Solve TSP execution time: ", elapsed_time, " seconds")
 
 # using Concorde
 
@@ -28,8 +32,10 @@ println("Optimal length: ", opt_len)
 #     # @show coords
 #     X = [coord[1] for coord in coords]
 #     Y = [coord[2] for coord in coords]
-#     @show typeof(X)
-#     @show typeof(Y)
+#     # @show X
+#     # @show Y
+#     # @show typeof(X)
+#     # @show typeof(Y)
 
 #     # # Create distance matrix
 #     # N = length(coords)
@@ -43,7 +49,5 @@ println("Optimal length: ", opt_len)
 #     return X, Y
 # end
 
-# X, Y = solve_tsp_q()
-# opt_tour, opt_len = solve_tsp(X, Y; dist="EUC_2D")
-
-# 33522
+# x, y = solve_tsp_q()
+# opt_tour, opt_len = Concorde.solve_tsp(x, y; dist="EUC_2D")

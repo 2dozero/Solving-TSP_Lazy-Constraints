@@ -1,34 +1,8 @@
 using JuMP, GLPK, Distances
 using Gurobi
+using BenchmarkTools
 
-# function solve_tsp(;file_name="att48.tsp", benchmark=false)
-#     # f = open("./data/" * file_name);
-#     # lines = readlines(f)
-#     coords = []
-#     start_reading = false
-#     f = open("./data/" * file_name)
-#         for line in eachline(f)
-#             if start_reading
-#                 if line == "EOF"
-#                     break
-#                 end
-#                 _, x, y = split(line)
-#                 push!(coords, (parse(Float64, x), parse(Float64, y)))
-#             elseif line == "NODE_COORD_SECTION"
-#                 start_reading = true
-#             end
-#         end
-
-#     N = length(coords)
-#     !benchmark && println("N: ", N)
-
-#     m = Model(Gurobi.Optimizer)
-#     dist_mat = zeros(N,N)
-#     for i=1:N, j=1:N
-#         dist_mat[i,j] = euclidean(coords[i], coords[j])
-#     end
-
-function solve_tsp(;file_name="att48.tsp", benchmark=false)
+function solve_tsp(;file_name="st70.tsp", benchmark=false)
     coords = []
     start_reading = false
     f = open("./data/" * file_name)
@@ -95,9 +69,16 @@ function solve_tsp(;file_name="att48.tsp", benchmark=false)
     return m
 end
 
-model_ = solve_tsp()
-optimize!(model_)
+elapsed_time = @elapsed begin
+    model_ = solve_tsp()
+    optimize!(model_)
+end
+
+# 최적화 완료 후 결과 출력
 println("Objective value: ", JuMP.objective_value(model_))
+println("Solve TSP execution time: ", elapsed_time, " seconds")
+# model_ = solve_tsp()
+# optimize!(model_)
 
 # optimize!(m)
 # !benchmark && println("Obj: ", JuMP.objective_value(m))
