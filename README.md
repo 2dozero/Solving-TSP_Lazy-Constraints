@@ -11,6 +11,7 @@ In the experiments, it was confirmed that among all methods, using the Concorde 
 in the fastest derivation of the optimal solution. Considering the time it took other methods to
 solve st70.tsp, which consists of 70 nodes, it was evident why Concorde is considered an optimizer
 tailored for TSP.
+
 In the case of Iterative SE for berlin52.tsp, it operated faster than the lazy constraint approach,
 leading to expectations of good performance on st70 as well. However, possibly due to the repetitive
 nature of model optimization, it was observed that the speed significantly slows down once surpassing
