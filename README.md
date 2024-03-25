@@ -7,12 +7,14 @@ The symmetric Traveling Salesman Problem (TSP) instances (such as berlin52.tsp, 
 
 ## Experiments
 ![Table](image/Experiments.png)
-| TSP      | All SE Tour Length | All SE Time(s) | Iterative SE Tour Length | Iterative SE Time(s) | SE by Lazy Tour Length | SE by Lazy Time(s) | Concorde Tour Length | Concorde Time(s) |
-|----------|--------------------|----------------|--------------------------|----------------------|------------------------|--------------------|----------------------|-------------------|
-| berlin25 | 5,460              | 1.692          | 5,459                    | 1.081                | 5,459                  | 0.306              | 5,459                | 0.122             |
-| berlin52 | 7,544              | 1.032          | 7,542                    | 0.295                | 7,542                  | 4.573              | 7,542                | 0.025             |
-| st70     | 677                | 178.502        | 675                      | 1750.761             | 675                    | 83.187             | 675                  | 0.039             |
-| bier127  | -                  | -              | -                        | -                    | -                      | -                  | 118,282             | 0.157             |
+| TSP      | All SE          |                | Iterative SE   |                | SE by Lazy     |                | Concorde       |                |
+|----------|-----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|
+|          | Tour Length     | Time(s)        | Tour Length    | Time(s)        | Tour Length    | Time(s)        | Tour Length    | Time(s)        |
+|:---------|----------------:|---------------:|---------------:|---------------:|---------------:|---------------:|---------------:|---------------:|
+| berlin25 | 5,460           | 1.692          | 5,459          | 1.081          | 5,459          | 0.306          | 5,459          | 0.122          |
+| berlin52 | 7,544           | 1.032          | 7,542          | 0.295          | 7,542          | 4.573          | 7,542          | 0.025          |
+| st70     | 677             | 178.502        | 675            | 1750.761       | 675            | 83.187         | 675            | 0.039          |
+| bier127  | -               | -              | -              | -              | -              | -              | 118,282        | 0.157          |
 
 In the experiments, it was confirmed that among all methods, using the Concorde solver resulted
 in the fastest derivation of the optimal solution. Considering the time it took other methods to
