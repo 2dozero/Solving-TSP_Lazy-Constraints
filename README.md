@@ -7,8 +7,7 @@ The symmetric Traveling Salesman Problem (TSP) instances (such as berlin52.tsp, 
 
 ## Experiments
 ![Table](image/Experiments.png)
-| TSP      | All SE          |                | Iterative SE   |                | SE by Lazy     |                | Concorde       |                |
-|----------|-----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|
+| TSP      | All SE          |                | Iterative SE   |                | SE by Lazy     |                | Concorde       |  
 |          | Tour Length     | Time(s)        | Tour Length    | Time(s)        | Tour Length    | Time(s)        | Tour Length    | Time(s)        |
 |:---------|----------------:|---------------:|---------------:|---------------:|---------------:|---------------:|---------------:|---------------:|
 | berlin25 | 5,460           | 1.692          | 5,459          | 1.081          | 5,459          | 0.306          | 5,459          | 0.122          |
